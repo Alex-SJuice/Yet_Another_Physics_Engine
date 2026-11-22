@@ -9,3 +9,7 @@ So I've decided that I'm going to spend the time to make this correctly. No more
 This will be a very big learning experience for me, especially in terms of optimization and vector math.
 
 ## Features
+
+ship #1
+ - basic ball simulator
+ - basically all of the rendering backbone needed to expand the simulation

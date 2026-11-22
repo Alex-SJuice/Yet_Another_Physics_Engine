@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 raylib = "6.0.0"
 nalgebra = "0.35.0"
+rand = "0.10.4"
