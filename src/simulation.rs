@@ -86,8 +86,13 @@ impl Simulation {
 				if collision_axis.magnitude() < objects[i].radius() + objects[j].radius() {
 					let delta = objects[i].radius() + objects[j].radius() - collision_axis.magnitude();
 					let mass_total = objects[j].mass() + objects[i].mass();
-					current += collision_axis.normalize().scale(objects[j].mass() / mass_total * delta);
-					other -= collision_axis.normalize().scale(objects[i].mass() / mass_total * delta);
+					if collision_axis.magnitude() == 0.0 {
+						current += Vector2::new(1.0, 0.0).scale(objects[j].mass() / mass_total * delta);
+						other -= Vector2::new(1.0, 0.0).scale(objects[i].mass() / mass_total * delta);
+					} else {
+						current += collision_axis.normalize().scale(objects[j].mass() / mass_total * delta);
+						other -= collision_axis.normalize().scale(objects[i].mass() / mass_total * delta);
+					}
 					objects[j].position = other;
 					objects[i].position = current;
 				}

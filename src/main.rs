@@ -17,7 +17,7 @@ fn main() {
         .window_scale(100.0, 100.0)
         .window_position(-50.0, 100.0)
         .build();
-    sim.set_constraint(Vector2::<f32>::new(0.0, 50.0), 40.0);
+    sim.set_constraint(Vector2::<f32>::new(0.0, 50.0), 45.0);
 
     for i in 0..=15 {
         sim.add_object(PointMass::new(
