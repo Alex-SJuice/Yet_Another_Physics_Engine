@@ -1,5 +1,5 @@
-use super::super::objects::PointMass;
-use super::super::simulation::Simulation;
+use crate::objects::{PointMass, Collidable, Object, WorldBoundary};
+use crate::simulation::Simulation;
 use raylib::prelude::*;
 use raylib::consts::MouseButton;
 use na::Vector2;
@@ -12,8 +12,8 @@ pub trait ObjectDraw {
 
 impl<T: RaylibDraw> ObjectDraw for T {
 	fn draw_pointmass(&mut self, window: &Window, object: &PointMass) {
-		let position = window.simulation_to_screen(object.position);
-		let shape = window.scale().scale(object.radius());
+		let position = window.simulation_to_screen(object.get_position());
+		let shape = window.scale().scale(object.get_radius());
 		self.draw_ellipse(
 			position.x as i32, 
 			position.y as i32, 
@@ -23,18 +23,73 @@ impl<T: RaylibDraw> ObjectDraw for T {
 	}
 
 	fn draw_simulation(&mut self, simulation: &Simulation) {
-		let (mut position, radius) = simulation.constraint();
-		position = simulation.window().simulation_to_screen(position);
-		let radius = simulation.window().scale().scale(radius);
-		self.draw_ellipse(
-			position.x as i32,
-			position.y as i32, 
-			radius.x, 
-			radius.y,
-			Color::BLACK);
-		for object in simulation.objects() {
-			self.draw_pointmass(simulation.window(), &object);
+		match simulation.get_constraint() {
+			WorldBoundary::Circle { center, radius } => {
+				let position = simulation.window().simulation_to_screen(*center);
+				let radius = simulation.window().scale().scale(*radius);
+				self.draw_ellipse(
+					position.x as i32,
+					position.y as i32, 
+					radius.x, 
+					radius.y,
+					Color::BLACK);
+				for object in simulation.get_objects() {
+					match object {
+						Object::PointMass(point_mass) => {
+							self.draw_pointmass(simulation.window(), &point_mass);
+						}, 
+						Object::SoftBody(soft_body) => {
+							for node in soft_body.get_nodes() {
+								if let Object::PointMass(point_mass) = node {
+									self.draw_pointmass(simulation.window(), &point_mass);
+								}
+							}
+						},
+					}
+				}
+			},
+			WorldBoundary::Box { bottom_left, dimensions } => {
+				let position = simulation.window().simulation_to_screen(*bottom_left);
+				let dimensions = simulation.window().scale().component_mul(dimensions);
+				self.draw_rectangle(
+					position.x as i32,
+					(position.y + dimensions.y) as i32,
+					dimensions.x as i32,
+					dimensions.y as i32,
+					Color::BLACK);
+				for object in simulation.get_objects() {
+					match object {
+						Object::PointMass(point_mass) => {
+							self.draw_pointmass(simulation.window(), &point_mass);
+						}, 
+						Object::SoftBody(soft_body) => {
+							for node in soft_body.get_nodes() {
+								if let Object::PointMass(point_mass) = node {
+									self.draw_pointmass(simulation.window(), &point_mass);
+								}
+							}
+						},
+					}
+				}
+			},
+			WorldBoundary::None => {
+				for object in simulation.get_objects() {
+					match object {
+						Object::PointMass(point_mass) => {
+							self.draw_pointmass(simulation.window(), &point_mass);
+						}, 
+						Object::SoftBody(soft_body) => {
+							for node in soft_body.get_nodes() {
+								if let Object::PointMass(point_mass) = node {
+									self.draw_pointmass(simulation.window(), &point_mass);
+								}
+							}
+						},
+					}
+				}
+			},
 		}
+		
 	}
 }
 
@@ -63,11 +118,16 @@ impl Handles {
 		Vector2::<f32>::new(self.handle.get_mouse_x() as f32, self.handle.get_mouse_y() as f32)
 	}
 
-	pub fn is_mouse_pressed(&self) -> bool {
-		self.handle.is_mouse_button_pressed(MouseButton::MOUSE_BUTTON_LEFT)
+	pub fn get_mouse_delta(&self) -> Vector2<f32> {
+		Vector2::<f32>::new(self.handle.get_mouse_delta().x, self.handle.get_mouse_delta().x)
 	}
-	pub fn is_mouse_down(&self) -> bool {
-		self.handle.is_mouse_button_down(MouseButton::MOUSE_BUTTON_LEFT)
+
+	pub fn is_mouse_pressed(&self, button: MouseButton) -> bool {
+		self.handle.is_mouse_button_pressed(button)
+	}
+
+	pub fn is_mouse_down(&self, button: MouseButton) -> bool {
+		self.handle.is_mouse_button_down(button)
 	}
 }
 

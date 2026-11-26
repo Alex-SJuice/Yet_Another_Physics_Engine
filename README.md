@@ -1,7 +1,7 @@
 # Yet_Another_Physics_Engine (YAP)
 
-A physics engine I made myself. Written in Rust
-for Terra week #5!
+A physics engine I made myself. Written in Rust.
+for Terra week #5 & #6!
 
 [*!LATEST RELEASE!*](https://github.com/Alex-SJuice/Yet_Another_Physics_Engine/releases/tag/v0.0.1) 
 
