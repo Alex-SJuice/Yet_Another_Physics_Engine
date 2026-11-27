@@ -38,13 +38,6 @@ impl<T: RaylibDraw> ObjectDraw for T {
 						Object::PointMass(point_mass) => {
 							self.draw_pointmass(simulation.window(), &point_mass);
 						}, 
-						Object::SoftBody(soft_body) => {
-							for node in soft_body.get_nodes() {
-								if let Object::PointMass(point_mass) = node {
-									self.draw_pointmass(simulation.window(), &point_mass);
-								}
-							}
-						},
 					}
 				}
 			},
@@ -62,29 +55,6 @@ impl<T: RaylibDraw> ObjectDraw for T {
 						Object::PointMass(point_mass) => {
 							self.draw_pointmass(simulation.window(), &point_mass);
 						}, 
-						Object::SoftBody(soft_body) => {
-							for node in soft_body.get_nodes() {
-								if let Object::PointMass(point_mass) = node {
-									self.draw_pointmass(simulation.window(), &point_mass);
-								}
-							}
-						},
-					}
-				}
-			},
-			WorldBoundary::None => {
-				for object in simulation.get_objects() {
-					match object {
-						Object::PointMass(point_mass) => {
-							self.draw_pointmass(simulation.window(), &point_mass);
-						}, 
-						Object::SoftBody(soft_body) => {
-							for node in soft_body.get_nodes() {
-								if let Object::PointMass(point_mass) = node {
-									self.draw_pointmass(simulation.window(), &point_mass);
-								}
-							}
-						},
 					}
 				}
 			},

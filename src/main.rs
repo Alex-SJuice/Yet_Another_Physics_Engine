@@ -3,7 +3,7 @@ extern crate nalgebra as na;
 mod simulation;
 mod objects;
 
-use objects::{PointMass, Object, Link, SoftBody};
+use objects::{PointMass, Object};
 use simulation::{TimeManager, rendering::ObjectDraw};
 use na::{Vector2};
 use raylib::prelude::*;
@@ -28,29 +28,13 @@ fn main() {
         accumulator += render_timer.delta().as_secs_f32();
 
         if accumulator >= 1.0 / 120.0 {
-            if handles.is_mouse_pressed(MouseButton::MOUSE_BUTTON_RIGHT) {
+            if handles.is_mouse_down(MouseButton::MOUSE_BUTTON_RIGHT) {
                 let mass = rand::rng().random_range(1.0..10.0);
-                // sim.add_object(Object::PointMass(PointMass::new(
-                //         sim.window().screen_to_simulation(handles.get_mouse_position()),// + Vector2::<f32>::new(i as f32 - cubes as f32, i as f32 - cubes as f32),
-                //         3.0,
-                //         mass,
-                //         false)));
-                let mut object = SoftBody::new();
-                for i in 0..4 {
-                    object.add_node(PointMass::new(
-                        sim.window().screen_to_simulation(handles.get_mouse_position()) + Vector2::<f32>::new(i as f32, i as f32),
-                        3.0,
+                sim.add_object(Object::PointMass(PointMass::new(
+                        sim.window().screen_to_simulation(handles.get_mouse_position()),
+                        1.0,
                         mass,
-                        false
-                    ));
-                }
-                object.add_edge(Link::new(0, 1, 6.0, 1.0));
-                object.add_edge(Link::new(1, 2, 6.0, 1.0));
-                object.add_edge(Link::new(2, 3, 6.0, 1.0));
-                object.add_edge(Link::new(3, 0, 6.0, 1.0));
-                object.add_edge(Link::new(0, 2, 6.0 * 2.0_f32.sqrt(), 1.0));
-                object.add_edge(Link::new(1, 3, 6.0 * 2.0_f32.sqrt(), 1.0));
-                sim.add_object(Object::SoftBody(object));
+                        false)));
             }
             sim.update(&handles);
             {
