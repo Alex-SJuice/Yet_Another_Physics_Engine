@@ -3,7 +3,7 @@
 A physics engine I made myself. Written in Rust.
 for Terra week #5 & #6!
 
-[*!LATEST RELEASE!*](https://github.com/Alex-SJuice/Yet_Another_Physics_Engine/releases/tag/v0.0.1) 
+[*!LATEST RELEASE!*](https://github.com/Alex-SJuice/Yet_Another_Physics_Engine/releases/tag/v0.0.2) 
 
 ![preview](devlog_pics/2026-11-22.png)
 
@@ -25,4 +25,4 @@ ship #1
 ### Linux & Mac
 - Install Rust
 - Download the source code
-- build it with 'cargo run'
+- build it with 'cargo run' or 'cargo run --release' for better performance
